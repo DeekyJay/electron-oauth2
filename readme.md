@@ -28,7 +28,9 @@ app.on('ready', () => {
   const windowParams = {
     alwaysOnTop: true,
     autoHideMenuBar: true,
-    nodeIntegration: false
+    webPreferences: {
+        nodeIntegration: false
+    }
   }
 
   const options = {
@@ -83,7 +85,8 @@ If set to true, token requests will be made using a Basic authentication header 
 
 ###### redirectUri (optional)
 Type: `String`
-Sets a custom redirect_uri that can be required by some OAuth2 clients.
+Sets a custom redirect_uri that can be required by some OAuth2 clients. 
+Default: ```urn:ietf:wg:oauth:2.0:oob```
 
 #### windowParams
 
@@ -106,6 +109,10 @@ The optional OAuth2 scopes.
 ###### accessType
 Type: `String`
 The optional OAuth2 access type.
+
+###### additionalTokenRequestData
+Type: `Object`
+The optional additional parameters to pass to the server in the body of the token request.
 
 #### getAuthorizationCode(options)
 

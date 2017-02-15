@@ -1,10 +1,12 @@
+'use strict';
+
 const Promise = require('pinkie-promise');
 const queryString = require('querystring');
 const fetch = require('node-fetch');
 const objectAssign = require('object-assign');
 const nodeUrl = require('url');
 const electron = require('electron');
-const BrowserWindow = electron.BrowserWindow;
+const BrowserWindow = electron.BrowserWindow || electron.remote.BrowserWindow;
 
 module.exports = function (config, windowParams) {
   function getAuthorizationCode(opts) {
@@ -46,14 +48,18 @@ module.exports = function (config, windowParams) {
         var code = query.code;
         var error = query.error;
 
-        if (error) {
+        if (error !== undefined) {
           reject(error);
           authWindow.removeAllListeners('closed');
-          authWindow.close();
+          setImmediate(function () {
+            authWindow.close();
+          });
         } else if (code) {
           resolve(code);
           authWindow.removeAllListeners('closed');
-          authWindow.close();
+          setImmediate(function () {
+            authWindow.close();
+          });
         }
       }
 
@@ -94,11 +100,17 @@ module.exports = function (config, windowParams) {
   function getAccessToken(opts) {
     return getAuthorizationCode(opts)
       .then(authorizationCode => {
-        return tokenRequest({
+        var tokenRequestData = {
           code: authorizationCode,
           grant_type: 'authorization_code',
           redirect_uri: config.redirectUri
+<<<<<<< HEAD
         });
+=======
+        };
+        tokenRequestData = Object.assign(tokenRequestData, opts.additionalTokenRequestData);
+        return tokenRequest(tokenRequestData);
+>>>>>>> upstream/master
       });
   }
 
