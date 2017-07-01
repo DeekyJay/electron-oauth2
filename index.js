@@ -60,14 +60,31 @@ module.exports = function (config, windowParams) {
           setImmediate(function () {
             authWindow.close();
           });
+        } else {
+          console.log('Nothing here')
         }
       }
 
       authWindow.webContents.on('will-navigate', (event, url) => {
+        console.log('Navigate')
         onCallback(url);
       });
 
+      // This is what gets called 100%, not will-navigate, so we do the callback here as well.
+      authWindow.webContents.on('did-navigate', (event, url) => {
+        console.log('Did Navigate')
+        onCallback(url);
+      });
+
+      // I'm leaving this here for reference
+      // This happens when there is a second oauth, will-navigate doesn't get called.
+      authWindow.webContents.on('did-navigate-in-page', (event, url) => {
+        console.log('Navigate In Page')
+        // onCallback(url);
+      });
+
       authWindow.webContents.on('did-get-redirect-request', (event, oldUrl, newUrl) => {
+        console.log('Redirect', newUrl)
         onCallback(newUrl);
       });
     });
@@ -104,13 +121,9 @@ module.exports = function (config, windowParams) {
           code: authorizationCode,
           grant_type: 'authorization_code',
           redirect_uri: config.redirectUri
-<<<<<<< HEAD
-        });
-=======
         };
         tokenRequestData = Object.assign(tokenRequestData, opts.additionalTokenRequestData);
         return tokenRequest(tokenRequestData);
->>>>>>> upstream/master
       });
   }
 
