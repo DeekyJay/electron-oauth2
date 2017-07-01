@@ -60,8 +60,6 @@ module.exports = function (config, windowParams) {
           setImmediate(function () {
             authWindow.close();
           });
-        } else {
-          console.log('Nothing here')
         }
       }
 
