@@ -88,9 +88,13 @@ module.exports = function (config, windowParams) {
       header.Authorization = 'Basic ' + new Buffer(config.clientId + ':' + config.clientSecret).toString('base64');
     } else {
       objectAssign(data, {
-        client_id: config.clientId,
-        client_secret: config.clientSecret
+        client_id: config.clientId
       });
+      if (config.clientSecret) {
+        objectAssign(data, {
+          client_secret: config.clientSecret
+        })
+      }
     }
 
     return fetch(config.tokenUrl, {
